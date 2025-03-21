@@ -8,7 +8,8 @@ clear all;
 
 tol = 1e-4;
 c = [2, 4];  %[Part A, Part B]
-n = [10, 50, 100, 500]; %early test
+%n = [5, 10, 25, 50, 100]; %low test
+n = [10, 25, 50, 100, 500]; %base test
 %n = [50, 100, 500, 1000, 5000]; %stress testing
 max_iter = 10000;  % Safety limit for iterations
 
@@ -87,23 +88,23 @@ disp(iter_c4)
 
 %plotting n vs iter for c=2
 fig1 = figure; 
-loglog(n, iter_c2);
+loglog(n, iter_c2,'-s','color', 'r');
 xlabel('Matrix size (n)');
 ylabel('# of iterations');
 title('Iterations require to solve nxn matricies for C = 2');
 grid on;
 
 y1 = polyfit(n, iter_c2, 1);
-r1 = y1(1); %Big O rep of jacobi complextity growth for c = 2
+r1 = y1(1) %Power-Law Big O rep of Jacobi complextity growth for c = 2
 
 %plotting n vs iter for c=4
 fig2 = figure;
-loglog(n, iter_c4);
+loglog(n, iter_c4,'-o', 'color', 'b');
 xlabel('Matrix size (n)');
 ylabel('# of iterations');
 title('Iterations require to solve nxn matricies for C = 4');
 grid on;
 
 y2 = polyfit(n, iter_c4, 1);
-r2 = y2(1); %Big O rep of jacobi complextity growth for c = 4
+r2 = y2(1) %Power-Law Big O rep of Jacobi complextity growth for c = 4
 
