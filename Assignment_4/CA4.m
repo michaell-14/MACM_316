@@ -8,10 +8,13 @@ clear all;
 
 tol = 1e-4;
 c = [2, 4];  %[Part A, Part B]
-n = [10, 50, 100, 500];
-%n = [50, 100, 500, 1000, 5000]; %early test
-%n = [100, 500, 1000, 5000, 10000, 20000, 30000]; %stress testing
+n = [10, 50, 100, 500]; %early test
+%n = [50, 100, 500, 1000, 5000]; %stress testing
 max_iter = 10000;  % Safety limit for iterations
+
+%empty ls for iterations, for plotting
+iter_c2 = zeros(size(n));
+iter_c4 = zeros(size(n));
 
 for i = 1:length(c)
     disp('-----------------------------------')
@@ -25,7 +28,7 @@ for i = 1:length(c)
         A_n = spdiags([off_diag main_diag off_diag], [-1 0 1], n(j), n(j));
         b_n = ones(n(j), 1);
 
-        % Declaratives:
+        %Declaratives:
         D = diag(A_n);
         D_inv = diag(1./D);
         L = tril(A_n, -1); %lower tri 
@@ -52,22 +55,55 @@ for i = 1:length(c)
         spectral_radius = max(abs(eig(D_inv * (L + U))));
         disp(['Spectral Radius: ', num2str(spectral_radius)]);
 
-        % Jacobi Iteration
+        %Jacobi Iteration
         while iter < max_iter
             x_new = D_inv * (b_n - (L + U) * x); % Jacobi update
             rel_error = norm(x_new - x_exact, 2) / norm(x_exact, 2);  % Relative error
             iter = iter + 1;
 
-            % Check stopping condition
+            %iteration appending
+            if c(i) == 2
+                iter_c2(j) = iter;
+            elseif c(i) == 4
+                iter_c4(j) = iter;
+            end
+
             if rel_error < tol
                 disp(['c = ', num2str(c(i)), ', n = ', num2str(n(j)), ', Iterations: ', num2str(iter)]);
+                disp(['Error: ', num2str(rel_error)])
                 disp(" ")
                 break
             end
-            x = x_new; % Update x
+            x = x_new; %Update x
         end
         if iter == max_iter
             warning(['Jacobi method did not converge for c = ', num2str(c(i)), ', n = ', num2str(n(j))]);
+            %Safety, meaning max iterations has been hit before convergence
         end
     end
 end
+disp(iter_c2)
+disp(iter_c4)
+
+%plotting n vs iter for c=2
+fig1 = figure; 
+loglog(n, iter_c2);
+xlabel('Matrix size (n)');
+ylabel('# of iterations');
+title('Iterations require to solve nxn matricies for C = 2');
+grid on;
+
+y1 = polyfit(n, iter_c2, 1);
+r1 = y1(1); %Big O rep of jacobi complextity growth for c = 2
+
+%plotting n vs iter for c=4
+fig2 = figure;
+loglog(n, iter_c4);
+xlabel('Matrix size (n)');
+ylabel('# of iterations');
+title('Iterations require to solve nxn matricies for C = 4');
+grid on;
+
+y2 = polyfit(n, iter_c4, 1);
+r2 = y2(1); %Big O rep of jacobi complextity growth for c = 4
+
