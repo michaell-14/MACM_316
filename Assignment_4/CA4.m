@@ -86,8 +86,21 @@ end
 disp(iter_c2)
 disp(iter_c4)
 
-%plotting n vs iter for c=2
-fig1 = figure; 
+%Calculating growth rate for C = 2, EMPERICALLY
+valid_indices = 1:3; % Keep only the first three elements
+ic2 = iter_c2(valid_indices);
+n_valid = n(valid_indices);%plotting n vs iter for c=2
+r = 0;
+for s = 1:length(ic2)
+    r = r + ic2(s)/(n_valid(s)^2);
+end
+c2_r = r/length(ic2);
+disp(['Growth Rate for Jacobi c = 2 --> ', num2str(c2_r)])
+
+fig1 = figure;
+% no log-log regression as invalid convergence cases
+% the failure to converge leads invalid regression line slope
+% slope for c = 2 is obtained through imperical methods (ABOVE)
 loglog(n, iter_c2,'-s','color', 'r');
 xlabel('Matrix size (n)');
 ylabel('# of iterations');
@@ -95,8 +108,6 @@ title('Iterations require to solve nxn matricies for C = 2');
 grid on;
 print(fig1, "Jacobi_C2.png", '-dpng'); 
 
-y1 = polyfit(n, iter_c2, 1);
-r1 = y1(1) %Power-Law Big O rep of Jacobi complextity growth for c = 2
 
 %plotting n vs iter for c=4
 fig2 = figure;
