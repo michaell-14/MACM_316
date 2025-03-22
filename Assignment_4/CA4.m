@@ -93,6 +93,7 @@ xlabel('Matrix size (n)');
 ylabel('# of iterations');
 title('Iterations require to solve nxn matricies for C = 2');
 grid on;
+print(fig1, "Jacobi-C2.png", '-dpng'); 
 
 y1 = polyfit(n, iter_c2, 1);
 r1 = y1(1) %Power-Law Big O rep of Jacobi complextity growth for c = 2
@@ -104,6 +105,7 @@ xlabel('Matrix size (n)');
 ylabel('# of iterations');
 title('Iterations require to solve nxn matricies for C = 4');
 grid on;
+print(fig2, "Jacobi-C4.png", '-dpng'); 
 
 y2 = polyfit(n, iter_c4, 1);
 r2 = y2(1) %Power-Law Big O rep of Jacobi complextity growth for c = 4
