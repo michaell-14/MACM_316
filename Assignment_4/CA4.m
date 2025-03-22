@@ -3,7 +3,7 @@ clear all;
 
 % Processing:
 % x_n+1 = D_inv.*(L+U).*x + D'.*b_n
-% Refactoring above: ^^^
+% Refactoring above: ^^^cl
 % x_new = D_inv * (b_n - (L + U) * x);
 
 tol = 10^-3;
@@ -11,7 +11,7 @@ c = [2, 4];  %[Part A, Part B]
 %n = [5, 10, 25, 50, 100]; %low test
 n = [10, 25, 50, 100, 500]; %base test
 %n = [50, 100, 500, 1000, 5000]; %stress testing
-max_iter = 100000;  % Safety limit for iterations
+max_iter = 1000000;  % Safety limit for iterations
 
 %empty ls for iterations, for plotting
 iter_c2 = zeros(size(n));
@@ -87,12 +87,12 @@ disp(iter_c2)
 disp(iter_c4)
 
 %Calculating growth rate for C = 2, EMPERICALLY
-valid_indices = 1:4; % Keep only the convergent elements (change when needed)
+valid_indices = 1:length(n); % Keep only the convergent elements (change when needed)
 ic2 = iter_c2(valid_indices);
 n_valid = n(valid_indices);%plotting n vs iter for c=2
 r = 0;
 for s = 1:length(ic2)
-    r_append = ic2(s)/(n_valid(s)^2); %this is here to show the calc vals
+    r_append = ic2(s)/(n_valid(s)^2) %this is here to show the calc vals
     r = r + r_append;
 end
 c2_r = r/length(ic2);
