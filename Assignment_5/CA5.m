@@ -104,10 +104,11 @@ disp('POLYFIT RESULTS:')
 %plot for m=3
 fig1 = figure;
 loglog(h_3, m3_error, '-o', 'color', 'b')
-xlabel('# of subintervals (n)');
+xlabel('Subintervals Size (h)');
 ylabel('Error');
-title('Error vs subintervals for m = 3');
+title('Error vs Subinterval sizes for m = 3');
 grid on;
+print(fig1, "Error_vs_h3.png", '-dpng'); 
 
 log_h3 = log(h_3);
 log_error_m3 = log(m3_error);
@@ -117,10 +118,11 @@ disp(['Error decrease rate for m = 3: h^',num2str(p(1))]);
 %plot for m=5
 fig2 = figure;
 loglog(h_5, m5_error, '-s','color', 'r')
-xlabel('# of subintervals (n)');
+xlabel('Subintervals Size (h)');
 ylabel('Error');
-title('Error vs subintervals for m = 5');
+title('Error vs Subinterval sizes for m = 5');
 grid on;
+print(fig2, "Error_vs_h5.png", '-dpng');
 
 log_h5 = log(h_5);
 log_error_m5 = log(m5_error);

@@ -20,6 +20,7 @@ h_5 = zeros(size(n_val));
 % For each m value, calculate exact integral and error for each n
 for m = 1:length(m_val)
     disp('-----------------------------------------')
+    disp(['m = ', num2str(m_val(m))])
     I_exact = integral(f{1}, a(1), b(1)) + integral(@(x) f{2}(x, m_val(m)), a(2), b(2));
     Df1 = diff(f1_sym, 4)
     Df2 = diff(f2_sym, 4)
@@ -87,6 +88,8 @@ for m = 1:length(m_val)
     end
 end
 
+%-----------DISPLAYS AND ANALYSIS-----------------
+
 disp(['N Values: ',num2str(n_val)])
 disp(' ')
 disp(['H for m = 3: ',num2str(h_3)])
@@ -95,28 +98,33 @@ disp('------------------------------------------------------')
 disp(['H for m = 5: ',num2str(h_5)])
 disp(['Abs error for m = 5',num2str(m5_error)])
 
+disp(' ')
+disp('POLYFIT RESULTS:')
 
-%m = 3
+%plot for m=3
 fig1 = figure;
 loglog(h_3, m3_error, '-o', 'color', 'b')
 xlabel('# of subintervals (n)');
 ylabel('Error');
 title('Error vs subintervals for m = 3');
 grid on;
+print(fig1, "Error_vs_h3.png", '-dpng'); 
 
 log_h3 = log(h_3);
-log_error_m3 = m3_error;
-p1 = polyfit(log_h3, log_error_m3, 1);
-disp(['',num2str(p1(1))]);
+log_error_m3 = log(m3_error);
+p = polyfit(log_h3, log_error_m3, 1);
+disp(['Error decrease rate for m = 3: h^',num2str(p(1))]);
 
+%plot for m=5
 fig2 = figure;
 loglog(h_5, m5_error, '-s','color', 'r')
-xlabel('# of subintervals (n)');
+xlabel('Subintervals (n)');
 ylabel('Error');
-title('Error vs subintervals for m = 5');
+title('Error vs Subinterval sizes for m = 5');
 grid on;
+print(fig2, "Error_vs_h5.png", '-dpng');
 
-log_h5 = log(n_val);
+log_h5 = log(h_5);
 log_error_m5 = log(m5_error);
-p2 = polyfit(log_n, log_error_m5, 1);
-disp(p2(1));
+q = polyfit(log_h5, log_error_m5, 1);
+disp(['Error decrease rate for m = 5: h^',num2str(q(1))]);
