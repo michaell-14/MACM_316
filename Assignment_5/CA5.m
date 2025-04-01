@@ -14,10 +14,13 @@ f2_sym = x^2 + (x - 0.5)^m;
 
 m3_error = zeros(size(n_val));
 m5_error = zeros(size(n_val));
+h_3 = zeros(size(n_val));
+h_5 = zeros(size(n_val));
 
 % For each m value, calculate exact integral and error for each n
 for m = 1:length(m_val)
     disp('-----------------------------------------')
+    disp(['m = ', num2str(m_val(m))])
     I_exact = integral(f{1}, a(1), b(1)) + integral(@(x) f{2}(x, m_val(m)), a(2), b(2));
     Df1 = diff(f1_sym, 4)
     Df2 = diff(f2_sym, 4)
@@ -32,6 +35,13 @@ for m = 1:length(m_val)
         
         for t = 1:2
             h = (b(t)-a(t))/n_val(n);
+            if m_val(m) == 3
+                h_3(n) = h;
+            else
+                h_5(n) = h;
+            end
+
+
             x = linspace(a(t), b(t), n_val(n) + 1);
             
             if t == 1
@@ -58,50 +68,61 @@ for m = 1:length(m_val)
             I_total = I_total + I_t;
             
             % Error for this subinterval
-            interval_error = (b(t)-a(t))^5/(180*n_val(n)^4) * f4_max;
-            total_error = total_error + interval_error;
+            abs_simpson_error = (b(t)-a(t))^5/(180*n_val(n)^4) * f4_max;
+            total_error = total_error + abs_simpson_error;
         end
         
         %error for plotting
         actual_error = abs(I_exact - I_total);
         if m_val(m) == 3
-            m3_error(n) = interval_error;
+            m3_error(n) = abs_simpson_error;
         else
-            m5_error(n) = interval_error;
+            m5_error(n) = abs_simpson_error;
         end
        
         disp(['For m = ', num2str(m_val(m)), '; n = ', num2str(n_val(n)), '; I = ', num2str(I_total)])
         disp(['I exact = ', num2str(I_exact)])
-        disp(['Theoretical Error Bound: ', num2str(total_error)])
-        disp(['Actual Abs Error: ', num2str(actual_error)])
+        disp(['Abs Simpsons Error: ', num2str(abs_simpson_error)])
+        disp(['Abs Error: ', num2str(actual_error)])
         disp(' ')
     end
 end
 
-disp(m3_error)
-disp(m5_error)
+%-----------DISPLAYS AND ANALYSIS-----------------
 
-%m = 3
+disp(['N Values: ',num2str(n_val)])
+disp(' ')
+disp(['H for m = 3: ',num2str(h_3)])
+disp(['Abs error for m = 3',num2str(m3_error)])
+disp('------------------------------------------------------')
+disp(['H for m = 5: ',num2str(h_5)])
+disp(['Abs error for m = 5',num2str(m5_error)])
+
+disp(' ')
+disp('POLYFIT RESULTS:')
+
+%plot for m=3
 fig1 = figure;
-loglog(n_val, m3_error, '-o', 'color', 'b')
+loglog(h_3, m3_error, '-o', 'color', 'b')
 xlabel('# of subintervals (n)');
 ylabel('Error');
 title('Error vs subintervals for m = 3');
 grid on;
 
-log_n = log(n_val);
+log_h3 = log(h_3);
 log_error_m3 = log(m3_error);
-p1 = polyfit(log_n, log_error_m3, 1);
-disp(p1(1));
+p = polyfit(log_h3, log_error_m3, 1);
+disp(['Error decrease rate for m = 3: h^',num2str(p(1))]);
 
+%plot for m=5
 fig2 = figure;
-loglog(n_val, m5_error, '-s','color', 'r')
+loglog(h_5, m5_error, '-s','color', 'r')
 xlabel('# of subintervals (n)');
 ylabel('Error');
 title('Error vs subintervals for m = 5');
 grid on;
 
-log_n = log(n_val);
+log_h5 = log(h_5);
 log_error_m5 = log(m5_error);
-p2 = polyfit(log_n, log_error_m5, 1);
-disp(p2(1));
+q = polyfit(log_h5, log_error_m5, 1);
+disp(['Error decrease rate for m = 5: h^',num2str(q(1))]);
